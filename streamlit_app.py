@@ -1,5 +1,4 @@
 import streamlit as st
-import openpyxl
 import random
 import time
 
