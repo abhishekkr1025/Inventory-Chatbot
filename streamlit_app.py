@@ -1,5 +1,6 @@
 import streamlit as st
 import openpyxl
+import pandas as pd
 import random
 import time
 
@@ -57,6 +58,14 @@ def response_generator():
         yield word + " "
         time.sleep(0.05)
 
+# Function to read the inventory data from the workbook
+def read_inventory_data(workbook):
+    sheet = workbook.active
+    data = sheet.iter_rows(values_only=True)
+    columns = next(data)  # Get the column names
+    df = pd.DataFrame(data, columns=columns)
+    return df
+
 # Accept user input
 if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
@@ -98,3 +107,8 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(response)
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
+
+# Load the workbook and display the inventory
+workbook = create_or_load_workbook("inventory.xlsx")
+inventory_df = read_inventory_data(workbook)
+st.dataframe(inventory_df)
